@@ -9,6 +9,9 @@ This project uses two data sources:
 
 ## Overview
 
+## Prerequisites
+1. Python 3.9
+2. List of packages to install and instructions <add below>
 
 ## Prepration
 A key component of this project is building a classifier that can take a term/phrase and identify whether it is a technical term/phrase or not. This is useful in processing abstracts from SBIR and patent database and filter out any non-technical terms.
@@ -18,3 +21,9 @@ To build the classifer, we need
 3. Finally a binary classifier using RandomForrest is created. This is implemented in <b>tech_term_classifier.ipynb</b> from the <b>model</b> folder.
 4. The trained model <b>trained_tech_classifier_model.joblib.zip</b>is stored as a zip file in <b>model</b> folder and can be used in subsequent stages. 
 
+## Extraction of technical terms
+Once necessary preparation is done, we are ready to do entity extraction. Entity extraction is done on patent dataset which is in xml format and SBIR dataset which is in csv format. For patents xml file, there is additional preprocessing done. The steps involved in technical terms is same for both datasets and as follows:
+1. Lemmatize the abstract field of each dataset. Additionally lemmatize the claims field in patent dataset - Spacy is used
+2. Extrac entities from the lemmatized text for each column - Scispacy is used
+3. Run the extracted entities in 2 through the binary RandomForrest classifier that was previously trained for identifying technical terms
+4. Save the filtered results in a csv file: <b>patents_entities.csv</b> and <b>sbir_entities.csv</b>
