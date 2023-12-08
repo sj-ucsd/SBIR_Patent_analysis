@@ -1,0 +1,72 @@
+#1. What states receive the most SBIR awards in a variety of technology areas?
+MATCH (award:AWARD)-[:BELONGSTO]->(principal:Principal)-[:WORKSIN]->(location:Location)
+MATCH (award:AWARD)-[:CONTAINS]->(abstract_entities)
+WHERE abstract_entities.abstract_entities CONTAINS 'communication'
+RETURN location.state, COUNT(DISTINCT award.key) AS sbir_awards
+ORDER BY sbir_awards DESC LIMIT 10;
+
+
+
+#2. What states are leading research in the area of technology x (ex: Photonics)?
+MATCH (title_pt)-[:ASSIGN]->(assignee_pt)
+MATCH (title_pt)-[:INVENTOR]->(inventors_pt)-[:RESEARCHED]->(abstract_entities_pt)
+WHERE abstract_entities_pt.abstract_entities CONTAINS 'communication' 
+RETURN assignee_pt.state,inventors_pt.state, COUNT(DISTINCT abstract_entities_pt.key) AS patents
+ORDER BY patents DESC LIMIT 10;
+
+
+#3. What states are benefiting the most from SBIR?
+MATCH (award:AWARD)-[:BELONGSTO]->(principal:Principal)-[:WORKSIN]->(location:Location)
+RETURN location.state, SUM(award.award_amount) AS Total_Award_Amount
+ORDER BY Total_Award_Amount DESC LIMIT 10;
+
+## need modification to add category (need to fix numeric issue)
+#4.What businesses receive the most SBIR awards?
+MATCH (award)-[:BELONGSTO]->(principal)
+RETURN principal.company, sum(award.award_amount) AS total_award
+LIMIT 5;
+
+
+#5. Did they receive any patents on the same topic?
+MATCH (award)-[:BELONGSTO]->(principal)
+MATCH (assignee_pt:Assignee_PT)
+WHERE assignee_pt.orgname CONTAINS  principal.company
+RETURN   assignee_pt.orgname, principal.company, award.award_amount
+LIMIT 5;
+
+
+
+#6. How many additional patents the businesses generated 1 year after the SBIR award completed?
+MATCH (award)-[:CONTAINS]->(abstract_entities)
+MATCH (applications_ref_pt)-[:CONTAINS]->(abstract_entities_pt)
+WHERE SUBSTR(applications_ref_pt.date,4) > award.year AND abstract_entities.abstract_entities CONTAINS 'communication' AND abstract_entities_pt.abstract_entities CONTAINS 'communication' 
+RETURN COUNT(applications_ref_pt.doc_number),abstract_entities.key
+LIMIt 2;
+
+
+#7. What technology areas are receiving the most interest from Government agencies and have patent filings?
+AGENCY -- Abstratc Entt ---ABstratc entt patent
+WHERE Abstratc Entt similarity ABstratc entt patent
+WHERE 
+RETURN Abstratc Entt, count( Abstratc Entt)
+ORDER BY count( Abstratc Entt) DESC
+
+#8. What companies are working in similar research areas in x (ex: AI)?
+MATCH (a:Abstract_Entities)-[:RESEARCHED]->(:AWARD)-[:CONTAINS]->(patent:Abstract_Entities_PT)<-[:RESEARCHED]-(b:Abstract_Entities)
+WHERE a.abstract_entities = 'AI'
+RETURN b.abstract_entities, COUNT(DISTINCT patent) AS patent_count
+ORDER BY patent_count DESC;
+
+#9. Given a technology domain, find the set of companies working in that domain and determine if pairing them together would make sense?
+WHERE SBIt ABS ENTT LIKE "commhnication" and  ABS ENTT SIM_score ABS ENTT_PT
+RETURN pricipal.orgname, 
+
+10# social consius ..minority companies recieving awrd percenatge of awrd
+
+MATCH pricipal
+WHERE pricipal company name like patnet comapny name
+RETURN pricipal (minority),pricipal (non minority) total_amount
+
+
+sbir.company.disadvnatage -> sbir entities = patent entities-> companies who have patents.
+I am a disadvantage company who wants to seel my company. I need to know what companies to target, find me the list of companies that have patents in my same area of work
