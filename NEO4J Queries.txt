@@ -5,14 +5,27 @@ WHERE abstract_entities.abstract_entities CONTAINS 'communication'
 RETURN location.state, COUNT(DISTINCT award.key) AS sbir_awards
 ORDER BY sbir_awards DESC LIMIT 10;
 
-
+ 
 
 #2. What states are leading research in the area of technology x (ex: Photonics)?
-MATCH (title_pt)-[:ASSIGN]->(assignee_pt)
-MATCH (title_pt)-[:INVENTOR]->(inventors_pt)-[:RESEARCHED]->(abstract_entities_pt)
-WHERE abstract_entities_pt.abstract_entities CONTAINS 'communication' 
-RETURN assignee_pt.state,inventors_pt.state, COUNT(DISTINCT abstract_entities_pt.key) AS patents
-ORDER BY patents DESC LIMIT 10;
+CALL {
+    MATCH (title_pt)-[:ASSIGN_PT]->(assignee_pt)
+    MATCH (title_pt)-[:CREATED_BY_PT]->(inventors_pt)-[:RESEARCHED_PT]->(Patent_Abstract)-[:HOLDS_PT]->(e:Entities)
+    WHERE toLower(e.entities) = 'communication'
+    RETURN assignee_pt.state as states, COUNT(DISTINCT title_pt.key) AS SBIR_PATENT_COUNT
+    UNION
+    MATCH (title_pt)-[:ASSIGN_PT]->(assignee_pt)
+    MATCH (title_pt)-[:CREATED_BY_PT]->(inventors_pt)-[:RESEARCHED_PT]->(Patent_Abstract)-[:HOLDS_PT]->(e:Entities)
+    WHERE toLower(e.entities) = 'communication'
+    RETURN inventors_pt.state as states,COUNT(DISTINCT title_pt.key) AS SBIR_PATENT_COUNT
+    UNION
+    MATCH (sbir_award:Sbir_Award)-[:AWARDED_TO]->(principal:Principal)-[:WORKSIN]->(location:Location)
+    MATCH (sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract)-[:HOLDS]->(e:Entities)
+    WHERE toLower(e.entities) = "communication"
+    RETURN location.state as states, COUNT(DISTINCT sbir_award.key) AS SBIR_PATENT_COUNT
+}
+RETURN states, SBIR_PATENT_COUNT
+ORDER BY SBIR_PATENT_COUNT DESC
 
 
 #3. What states are benefiting the most from SBIR?
