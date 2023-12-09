@@ -106,9 +106,35 @@ TBD
 MATCH (agency:Agency)-[:OVERSEES]->(sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(entities:Entities)<-[:HOLDS_PT]-(patent_abstract:Patent_Abstract)
 RETURN entities.entities AS INTRESTING_TECHNOLOGY, count(entities.entities) AS ENTITY_COUNT ORDERBY ENTITY_COUNT DESC;
 
-#10. How much funding has been received by minority or disadvantage  companies?
+#10. How much funding has been received by minority or disadvantage companies and how has the precetnage over the years changed?
 
-TBD
+Part 1: Total Award amount for Minority, disadvantaged, women owned, etc. SBIR
+MATCH (s:Sbir_Award)-[:AWARDED_TO]->(p:Principal)
+WHERE p.hubzone_owned = "Y" OR p.women_owned = "Y" or p.socially_economically_disadvantaged = "Y"
+RETURN sum(s.award_amount) AS total_mdw_award
+ORDER BY total_mdw_award desc;
+
+Part 2: Trend over the years
+
+CALL {
+    CALL {
+        MATCH (s:Sbir_Award)-[:AWARDED_TO]->(p:Principal)
+        WITH s.award_year as Year, s.award_amount AS Award_Amount, COLLECT {
+            MATCH (s)-[:AWARDED_TO]->(p)
+            WHERE p.hubzone_owned = "Y" OR p.women_owned = "Y" or p.socially_economically_disadvantaged = "Y"
+            RETURN s.award_amount
+            ORDER BY s.award_year ASC
+        } AS MDW_award
+        RETURN Year, SUM(Award_Amount) AS TA, reduce(total = 0, n IN MDW_award | total + n) AS TMA
+        ORDER BY Year
+    }
+    RETURN Year, SUM(TA) AS Total_Amount , SUM(TMA) AS Total_MDW_Award
+    ORDER BY Year ASC
+}
+WITH Year, Total_Amount, Total_MDW_Award
+WHERE Total_Amount > 0
+RETURN Year, Total_Amount, Total_MDW_Award,  round((Total_MDW_Award / Total_Amount), 2) AS Percent_MDW
+ORDER BY Year ASC
 
 #11. Are there any Patents that are similar to SBIRs?
 
