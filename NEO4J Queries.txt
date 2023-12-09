@@ -58,21 +58,52 @@ MATCH (agency:Agency)-[:OVERSEES]->(sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_ab
 RETURN entities.entities AS INTRESTING_TECHNOLOGY, count(entities.entities) AS ENTITY_COUNT ORDERBY ENTITY_COUNT DESC;
 
 #8. What companies are working in similar research areas in x (ex: AI)?
-MATCH (principal:Principal)-[:RESEARCHED]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(entities:Entities)
-WITH principal.company AS Company_Name, entities.entities AS Research_Area
-LIMIT 1000
+As GRAPH:
 
-// UNION ALL
+CALL {
+    MATCH (p:Principal)-[:RESEARCHED]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(e:Entities)
+    WHERE EXISTS {
+        MATCH ()-[r:HOLDS|HOLDS_PT]->(e)
+        WITH e, count(r) as rel_cnt
+        WHERE rel_cnt > 1
+    }
+    RETURN e as entity, p as company
+    ORDER BY entity 
+    UNION
+    MATCH (ap:Assignee_PT)<-[:ASSIGN_PT]-(title_pt:Title_PT)-[:HAS_PT]->(patent_abstract:Patent_Abstract)-[:HOLDS_PT]->(e:Entities)
+    WHERE EXISTS {
+        MATCH ()-[r:HOLDS|HOLDS_PT]->(e)
+        WITH e, count(r) as rel_cnt
+        WHERE rel_cnt > 1
+    }
+    RETURN e as entity, ap as company
+    ORDER BY entity 
+}
+RETURN entity, company
+ORDER BY entity 
 
-
-MATCH (assignee_pt:Assignee_PT)<-[:ASSIGN_PT]-(title_pt:Title_PT)-[:HAS_PT]->(patent_abstract:Patent_Abstract)-[:HOLDS_PT]->(entities_pt:Entities)
-WITH assignee_pt.orgname AS Company_Name, entities_pt.entities AS Research_Area
-LIMIT 1000
-
-RETURN Company_Name, Research_Area, count(Company_Name) AS ccp
-ORDER BY Research_Area
-LIMIT 10
-
+Just text:
+CALL {
+    MATCH (p:Principal)-[:RESEARCHED]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(e:Entities)
+    WHERE EXISTS {
+        MATCH ()-[r:HOLDS|HOLDS_PT]->(e)
+        WITH e, count(r) as rel_cnt
+        WHERE rel_cnt > 1
+    }
+    RETURN toLower(e.entities) as entity, toLower(p.company) as company
+    ORDER BY entity 
+    UNION
+    MATCH (ap:Assignee_PT)<-[:ASSIGN_PT]-(title_pt:Title_PT)-[:HAS_PT]->(patent_abstract:Patent_Abstract)-[:HOLDS_PT]->(e:Entities)
+    WHERE EXISTS {
+        MATCH ()-[r:HOLDS|HOLDS_PT]->(e)
+        WITH e, count(r) as rel_cnt
+        WHERE rel_cnt > 1
+    }
+    RETURN toLower(e.entities) as entity, toLower(ap.orgname) as company
+    ORDER BY entity 
+}
+RETURN entity, company
+ORDER BY entity 
 
 #9. Given a technology domain, find the set of companies working in that domain and determine if pairing them together would make sense?
 WHERE SBIt ABS ENTT LIKE "commhnication" and  ABS ENTT SIM_score ABS ENTT_PT
