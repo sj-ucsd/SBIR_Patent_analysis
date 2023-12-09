@@ -39,12 +39,10 @@ ORDER BY total_award desc;
 
 
 #5. Did they receive any patents on the same topic?
-MATCH (award)-[:BELONGSTO]->(principal)
-MATCH (assignee_pt:Assignee_PT)
-WHERE assignee_pt.orgname CONTAINS  principal.company
-RETURN   assignee_pt.orgname, principal.company, award.award_amount
-LIMIT 5;
-
+MATCH (assignee_pt:Assignee_PT)<-[]-(Patent_Abstract)-[]->(Entities)<-[]-(Sbir_Abstract)<-[]-(p:Principal)
+WHERE toLower(assignee_pt.orgname) contains toLower(p.company)
+RETURN distinct assignee_pt.orgname as patent_assignee, p.company as SBIR_awardee
+order by patent_assignee;
 
 
 #6. How many additional patents the businesses generated 1 year after the SBIR award completed?
@@ -56,17 +54,25 @@ LIMIt 2;
 
 
 #7. What technology areas are receiving the most interest from Government agencies and have patent filings?
-AGENCY -- Abstratc Entt ---ABstratc entt patent
-WHERE Abstratc Entt similarity ABstratc entt patent
-WHERE 
-RETURN Abstratc Entt, count( Abstratc Entt)
-ORDER BY count( Abstratc Entt) DESC
+MATCH (agency:Agency)-[:OVERSEES]->(sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(entities:Entities)<-[:HOLDS_PT]-(patent_abstract:Patent_Abstract)
+RETURN entities.entities AS INTRESTING_TECHNOLOGY, count(entities.entities) AS ENTITY_COUNT ORDERBY ENTITY_COUNT DESC;
 
 #8. What companies are working in similar research areas in x (ex: AI)?
-MATCH (a:Abstract_Entities)-[:RESEARCHED]->(:AWARD)-[:CONTAINS]->(patent:Abstract_Entities_PT)<-[:RESEARCHED]-(b:Abstract_Entities)
-WHERE a.abstract_entities = 'AI'
-RETURN b.abstract_entities, COUNT(DISTINCT patent) AS patent_count
-ORDER BY patent_count DESC;
+MATCH (principal:Principal)-[:RESEARCHED]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(entities:Entities)
+WITH principal.company AS Company_Name, entities.entities AS Research_Area
+LIMIT 1000
+
+// UNION ALL
+
+
+MATCH (assignee_pt:Assignee_PT)<-[:ASSIGN_PT]-(title_pt:Title_PT)-[:HAS_PT]->(patent_abstract:Patent_Abstract)-[:HOLDS_PT]->(entities_pt:Entities)
+WITH assignee_pt.orgname AS Company_Name, entities_pt.entities AS Research_Area
+LIMIT 1000
+
+RETURN Company_Name, Research_Area, count(Company_Name) AS ccp
+ORDER BY Research_Area
+LIMIT 10
+
 
 #9. Given a technology domain, find the set of companies working in that domain and determine if pairing them together would make sense?
 WHERE SBIt ABS ENTT LIKE "commhnication" and  ABS ENTT SIM_score ABS ENTT_PT
@@ -75,7 +81,7 @@ RETURN pricipal.orgname,
 10# social consius ..minority companies recieving awrd percenatge of awrd
 
 MATCH pricipal
-WHERE pricipal company name like patnet comapny name
+WHERE pricipal company name like patent comapny name
 RETURN pricipal (minority),pricipal (non minority) total_amount
 
 
