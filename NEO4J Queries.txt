@@ -1,8 +1,8 @@
 #1. What states receive the most SBIR awards in a variety of technology areas?
-MATCH (award:AWARD)-[:BELONGSTO]->(principal:Principal)-[:WORKSIN]->(location:Location)
-MATCH (award:AWARD)-[:CONTAINS]->(abstract_entities)
-WHERE abstract_entities.abstract_entities CONTAINS 'communication'
-RETURN location.state, COUNT(DISTINCT award.key) AS sbir_awards
+MATCH (sbir_award:Sbir_Award)-[:AWARDED_TO]->(principal:Principal)-[:WORKSIN]->(location:Location)
+MATCH (sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract)-[:HOLDS]->(e:Entities)
+WHERE toLower(e.entities) = "communication"
+RETURN location.state, COUNT(DISTINCT sbir_award.key) AS sbir_awards
 ORDER BY sbir_awards DESC LIMIT 10;
 
  
