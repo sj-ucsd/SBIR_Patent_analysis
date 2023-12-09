@@ -6,7 +6,6 @@ RETURN location.state, COUNT(DISTINCT sbir_award.key) AS sbir_awards
 ORDER BY sbir_awards DESC LIMIT 10;
 
  
-
 #2. What states are leading research in the area of technology x (ex: Photonics)?
 CALL {
     MATCH (title_pt)-[:ASSIGN_PT]->(assignee_pt)
@@ -29,15 +28,14 @@ ORDER BY SBIR_PATENT_COUNT DESC
 
 
 #3. What states are benefiting the most from SBIR?
-MATCH (award:AWARD)-[:BELONGSTO]->(principal:Principal)-[:WORKSIN]->(location:Location)
-RETURN location.state, SUM(award.award_amount) AS Total_Award_Amount
-ORDER BY Total_Award_Amount DESC LIMIT 10;
+MATCH (sbir:Sbir_Award)-[:AWARDED_TO]->(principal:Principal)-[:WORKSIN]->(location:Location)
+RETURN location.state, SUM(sbir.award_amount) AS Total_Award_Amount
+ORDER BY Total_Award_Amount DESC
 
-## need modification to add category (need to fix numeric issue)
 #4.What businesses receive the most SBIR awards?
-MATCH (award)-[:BELONGSTO]->(principal)
-RETURN principal.company, sum(award.award_amount) AS total_award
-LIMIT 5;
+MATCH (Sbir_Award)-[:AWARDED_TO]->(Principal)
+RETURN Principal.company, sum(Sbir_Award.award_amount) AS total_award
+ORDER BY total_award desc;
 
 
 #5. Did they receive any patents on the same topic?
