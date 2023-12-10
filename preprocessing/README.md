@@ -6,4 +6,6 @@ This folder contains files that will need to be run only once and results stored
 
 Other files:
 1. spacy_helper_methods.ipynb - Helper functions for spacy pipeline
+2. simularity_score_jedai.ipynb - OBSOLETE, no longer used
+3. sbir_patent_similarity.ipynb - OBSOLETE, no longer required
    
