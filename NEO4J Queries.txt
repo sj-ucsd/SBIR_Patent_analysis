@@ -1,3 +1,5 @@
+#start neo4j: run in the command line: neo4j console
+
 #1. What states receive the most SBIR awards in a variety of technology areas?
 MATCH (sbir_award:Sbir_Award)-[:AWARDED_TO]->(principal:Principal)-[:WORKSIN]->(location:Location)
 MATCH (sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract)-[:HOLDS]->(e:Entities)
@@ -98,15 +100,11 @@ CALL {
 RETURN entity, company
 ORDER BY entity 
 
-#8.Given a technology domain, find the set of companies working in that domain and determine if pairing them together would make sense?
-
-TBD
-
-#9. What technology areas are receiving the most interest from Government agencies and have patent filings?
+#8. What technology areas are receiving the most interest from Government agencies and have patent filings?
 MATCH (agency:Agency)-[:OVERSEES]->(sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(entities:Entities)<-[:HOLDS_PT]-(patent_abstract:Patent_Abstract)
 RETURN entities.entities AS INTRESTING_TECHNOLOGY, count(entities.entities) AS ENTITY_COUNT ORDERBY ENTITY_COUNT DESC;
 
-#10. How much funding has been received by minority or disadvantage companies and how has the precetnage over the years changed?
+#9. How much funding has been received by minority or disadvantage companies and how has the percentage changed over the years?
 
 Part 1: Total Award amount for Minority, disadvantaged, women owned, etc. SBIR
 MATCH (s:Sbir_Award)-[:AWARDED_TO]->(p:Principal)
@@ -136,7 +134,7 @@ WHERE Total_Amount > 0
 RETURN Year, Total_Amount, Total_MDW_Award,  round((Total_MDW_Award / Total_Amount), 2) AS Percent_MDW
 ORDER BY Year ASC
 
-#11. Are there any Patents that are similar to SBIRs?
+#10. Are there any Patents that are similar to SBIRs?
 
 As a Graph:
 MATCH (p:Principal)<-[]-(sbr:Sbir_Award)-[]->(sa:Sbir_Abstract)-[r:SIMILARITY_SCORE]->(pa:Patent_Abstract)-[]->(as:Assignee_PT)
