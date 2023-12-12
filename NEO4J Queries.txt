@@ -1,5 +1,3 @@
-#start neo4j: run in the command line: neo4j console
-
 #1. What states receive the most SBIR awards in a variety of technology areas?
 MATCH (sbir_award:Sbir_Award)-[:AWARDED_TO]->(principal:Principal)-[:WORKSIN]->(location:Location)
 MATCH (sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract)-[:HOLDS]->(e:Entities)
@@ -25,8 +23,10 @@ CALL {
     WHERE toLower(e.entities) = "communication"
     RETURN location.state as states, COUNT(DISTINCT sbir_award.key) AS SBIR_PATENT_COUNT
 }
-RETURN states, SBIR_PATENT_COUNT
-ORDER BY SBIR_PATENT_COUNT DESC
+WITH states, SUM(SBIR_PATENT_COUNT) as NUMBER_OF_ABSTRACTS
+ORDER BY states DESC
+RETURN states, NUMBER_OF_ABSTRACTS
+ORDER BY NUMBER_OF_ABSTRACTS DESC
 
 
 #3. What states are benefiting the most from SBIR?
@@ -102,7 +102,7 @@ ORDER BY entity
 
 #8. What technology areas are receiving the most interest from Government agencies and have patent filings?
 MATCH (agency:Agency)-[:OVERSEES]->(sbir_award:Sbir_Award)-[:CONTAINS]->(sbir_abstract:Sbir_Abstract)-[:HOLDS]->(entities:Entities)<-[:HOLDS_PT]-(patent_abstract:Patent_Abstract)
-RETURN entities.entities AS INTRESTING_TECHNOLOGY, count(entities.entities) AS ENTITY_COUNT ORDERBY ENTITY_COUNT DESC;
+RETURN entities.entities AS INTRESTING_TECHNOLOGY, COUNT(entities.entities) AS ENTITY_COUNT ORDER BY ENTITY_COUNT DESC;
 
 #9. How much funding has been received by minority or disadvantage companies and how has the percentage changed over the years?
 
