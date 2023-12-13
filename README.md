@@ -8,10 +8,10 @@ The focus of this project is to demonstrate ETL (Extract, Transform, Load) conce
 ## Authors
 Sagar Jogadhenu, Prakhar Shukla, Laben Fisher
 
-## Objective: 
+## Objective
 Build a knowledge base to facilitate easy query of research areas and link companies
 
-##  Target Use cases: 
+##  Target Use cases
 Partnership Targeting: Find synergies between companies working in similar areas/technologies
 Money flow/Research Trends: Understanding where investments are being prioritized
 Understanding effects of social policy impact on investments: How much funding are disadvantage or minority small businesses are receiving
