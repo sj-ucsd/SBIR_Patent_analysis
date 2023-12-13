@@ -42,8 +42,8 @@ Understanding effects of social policy impact on investments: How much funding a
 23. en_core_sci_lg-0.5.3
 
 
-# note other files will be needed if notebooks in the depricated folder are run. 
-# The depricated folder contains EDA and ML test that are not needed in the deliverable of the current baseline. They are there for reference purposes only.
+Note: Other files will be needed if notebooks in the depricated folder are run. 
+The depricated folder contains EDA and ML test that are not needed in the deliverable of the current baseline. They are there for reference purposes only.
 
 ## Installation Commands used in the various notebooks in this project
 It is recommended to just run the neo4j_graph_etl.ipynb file to generate the graph data base and to run the associated queries. If that is all that is needed, 
@@ -60,8 +60,8 @@ be usefull. When running the preprocessing files, errors did arise when running 
 !pip install spacy
 
 One of these two methods for isntalling en_core_web_lg should work for the target environment
-#!pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.0.0/en_core_web_lg-3.0.0.tar.gz
-#!python -m spacy download en_core_web_lg to be installed
+!pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.0.0/en_core_web_lg-3.0.0.tar.gz
+!python -m spacy download en_core_web_lg to be installed
 
 To download en_core_sci_lg language model used for the tests, uncomment and run the following line
 The en_core_sci_lg-0.5.3 model was run on spacy 3.6.1 and will provide a warning message saying it may not operate correctly with spacy 3.7.2
