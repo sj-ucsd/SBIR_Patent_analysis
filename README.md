@@ -95,7 +95,7 @@ Once necessary preparation is done, we are ready to do entity extraction. Entity
 1. Lemmatize the abstract field of each dataset. Additionally lemmatize the claims field in patent dataset - Spacy is used
 2. Extrac entities from the lemmatized text for each column - Scispacy is used
 3. Run the extracted entities in 2 through the binary RandomForrest classifier that was previously trained for identifying technical terms
-4. Save the filtered results in a csv file: <b>patents_entities.csv</b> and <b>sbir_entities_N.csv</b> where N is 1 to 7 since sbir_entities.csv is huge file.
+4. Save the filtered results in a csv file: <b>patents.json</b> and <b>sbir_1k_sample.csv</b>. Note that these files only contain 1k sample records. Uncomment cells in the notebook to get full set of records. 
 
 The notebooks used to generate technical entities are:
 1. process_patent_xml.ipynb
