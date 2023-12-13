@@ -16,6 +16,46 @@ Partnership Targeting: Find synergies between companies working in similar areas
 Money flow/Research Trends: Understanding where investments are being prioritized
 Understanding effects of social policy impact on investments: How much funding are disadvantage or minority small businesses are receiving
 
+## Order of notebook execution
+It is recommended to just run the neo4j_graph_etl.ipynb file to generate the graph data base and to run the associated queries. If that is all that is needed, 
+then it is recommended to skip this complete installation section and just run install the packages needed for that notebook. The reason for this is that this 
+project developed a modular approach and had intermediate data files generated after each stage of the pipeline. All the files and intermediate files have already 
+been run and the final module, the creation of the graph data base and running of queries can be executed withour rerunning these other files. 
+
+1. Ensure all input files are available. Some input files such as patents XML need ot be downloaded using URLs provided above
+2. Run following notebooks to create technical dictionary in any order in the <b>preprocessing</b> folder:
+   * <b>process_ieee_thesaurus_acm_terms.ipynb</b> - Produces <b> tech_terms.txt </b> in <b>preprocessed_files</b> folder
+   * <b>generate_nontech_terms.ipynb</b> - Produces </b> non_tech.txt </b> in <b>preprocessed_files</b> folder
+3. Run <b>tech_term_classifier.ipynb</b> notebook in <b>model</b> folder. Produces a model file <b>trained_tech_classifier_model.joblib</b>. Note that we manually compressed this file to upload to github so you will only see zip file as the generated file is too huge to upload as is. 
+4. Run following notebooks from <b>preprocessing</b> folder in any order:
+   * <b>process_patent_xml.ipynb</b> - Generates <b> patents.json</b> in <b>preprocessed_files</b> folder
+   * <b>process_sbir_csv.ipynb</b> - Generates <b> sbir_1k_sample.csv </b> in <b>preprocessed_files</b> folder
+   * <b>llama_similarity.ipynb</b> - Generates <b> llama_similarity.csv </b> in <b>preprocessed_files</b> folder
+5. Finally run the <b>neo4j_graph_etl.ipynb</b> from the top level folder. Generates a knowledge graph that can be accessed either via notebook or via neo4j desktop. 
+
+## Installation Commands used in the various notebooks in this project
+If it is desired to run each notebook to validate the notebooks or to update intermediate files, then running each of this installation scripts up front would 
+be usefull. When running the preprocessing files, errors did arise when running files multiple times and having multiple kernels running as well. It is recommended that one file at a time is run and when done, the kernal is shut down before running the next file just to be certain there is no conflicts. 
+
+!pip install bs4
+!pip install import-ipynb 
+!pip install jsonpath-ng
+!pip install spacy
+
+One of these two methods for isntalling en_core_web_lg should work for the target environment
+!pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.0.0/en_core_web_lg-3.0.0.tar.gz
+!python -m spacy download en_core_web_lg to be installed
+
+To download en_core_sci_lg language model used for the tests, uncomment and run the following line
+The en_core_sci_lg-0.5.3 model was run on spacy 3.6.1 and will provide a warning message saying it may not operate correctly with spacy 3.7.2
+For this project spacy 3.7.2 is needed and the model operated without issue and can be run in this manner. 
+Future iterations of this effort could work this descripency between versions of dependecies.
+```
+!pip install scispacy
+!pip install --upgrade scipy
+!pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_lg-0.5.3.tar.gz 
+```
+    
 ## Prerequisites
 1.  ast
 2.  bs4
@@ -45,34 +85,6 @@ Understanding effects of social policy impact on investments: How much funding a
 Note: Other files will be needed if notebooks in the depricated folder are run. 
 The depricated folder contains EDA and ML test that are not needed in the deliverable of the current baseline. They are there for reference purposes only.
 
-## Installation Commands used in the various notebooks in this project
-It is recommended to just run the neo4j_graph_etl.ipynb file to generate the graph data base and to run the associated queries. If that is all that is needed, 
-then it is recommended to skip this complete installation section and just run install the packages needed for that notebook. The reason for this is that this 
-project developed a modular approach and had intermediate data files generated after each stage of the pipeline. All the files and intermediate files have already 
-been run and the final module, the creation of the graph data base and running of queries can be executed withour rerunning these other files. 
-
-If it is desired to run each notebook to validate the notebooks or to update intermediate files, then running each of this installation scripts up front would 
-be usefull. When running the preprocessing files, errors did arise when running files multiple times and having multiple kernels running as well. It is recommended that one file at a time is run and when done, the kernal is shut down before running the next file just to be certain there is no conflicts. 
-
-!pip install bs4
-!pip install import-ipynb 
-!pip install jsonpath-ng
-!pip install spacy
-
-One of these two methods for isntalling en_core_web_lg should work for the target environment
-!pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.0.0/en_core_web_lg-3.0.0.tar.gz
-!python -m spacy download en_core_web_lg to be installed
-
-To download en_core_sci_lg language model used for the tests, uncomment and run the following line
-The en_core_sci_lg-0.5.3 model was run on spacy 3.6.1 and will provide a warning message saying it may not operate correctly with spacy 3.7.2
-For this project spacy 3.7.2 is needed and the model operated without issue and can be run in this manner. 
-Future iterations of this effort could work this descripency between versions of dependecies.
-```
-!pip install scispacy
-!pip install --upgrade scipy
-!pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_lg-0.5.3.tar.gz 
-```
-    
 ## Data URLs
 This URLs are were the base level data comes from for this project. The patent data will need to be manually downloaded and placed in the input_files folder.
 The SBIR Award Data will be accessed at run time, so a internet connection will be needed.
