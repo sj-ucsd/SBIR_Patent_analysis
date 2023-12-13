@@ -108,3 +108,15 @@ Semantic similarity between abstracts of SBIR and Patent dataset is performed us
 
 ## Final graph creation in neo4j
 Now that we have generated all necessary files, the knowledge graph in neo4j is created by further processing the data and creating nodes and edges. This is performed by <b> neo4j_graph_etl.ipynb </b> at the top level. For this notebook to run, neo4j desktop application may need to be open to get the connection details that need to be updated in the notebook. 
+
+## Order of notebook execution
+1. Ensure all input files are available. Some input files such as patents XML need ot be downloaded using URLs provided above
+2. Run following notebooks to create technical dictionary in any order in the <b>preprocessing</b> folder:
+   * <b>process_ieee_thesaurus_acm_terms.ipynb</b> - Produces <b> tech_terms.txt </b> in <b>preprocessed_files</b> folder
+   * <b>generate_nontech_terms.ipynb</b> - Produces </b> non_tech.txt </b> in <b>preprocessed_files</b> folder
+3. Run <b>tech_term_classifier.ipynb</b> notebook in <b>model</b> folder. Produces a model file <b>trained_tech_classifier_model.joblib</b>. Note that we manually compressed this file to upload to github so you will only see zip file as the generated file is too huge to upload as is. 
+4. Run following notebooks from <b>preprocessing</b> folder in any order:
+   * <b>process_patent_xml.ipynb</b> - Generates <b> patents.json</b> in <b>preprocessed_files</b> folder
+   * <b>process_sbir_csv.ipynb</b> - Generates <b> sbir_1k_sample.csv </b> in <b>preprocessed_files</b> folder
+   * <b>llama_similarity.ipynb</b> - Generates <b> llama_similarity.csv </b> in <b>preprocessed_files</b> folder
+5. Finally run the <b>neo4j_graph_etl.ipynb</b> from the top level folder. Generates a knowledge graph that can be accessed either via notebook or via neo4j desktop. 
