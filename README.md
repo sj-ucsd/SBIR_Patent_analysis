@@ -100,5 +100,5 @@ Once necessary preparation is done, we are ready to do entity extraction. Entity
 4. Save the filtered results in a csv file: <b>patents.json</b> and <b>sbir_1k_sample.csv</b>. Note that these files only contain 1k sample records. Uncomment cells in the notebook to get full set of records. 
 
 The notebooks used to generate technical entities are:
-1. process_patent_xml.ipynb
-2. process_sbir_csv.ipynb
+1. <b>process_patent_xml.ipynb</b>
+2. <b>process_sbir_csv.ipynb</b>
