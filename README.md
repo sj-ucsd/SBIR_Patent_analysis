@@ -102,3 +102,9 @@ Once necessary preparation is done, we are ready to do entity extraction. Entity
 The notebooks used to generate technical entities are:
 1. <b>process_patent_xml.ipynb</b>
 2. <b>process_sbir_csv.ipynb</b>
+
+## Semantic similarity
+Semantic similarity between abstracts of SBIR and Patent dataset is performed using LlamaIndex from OpenAI. The semantic similarity is implemented in the notebook <b>llama_similarity.ipynb</b> in the preprocessing folder. This notebook first create a set of tuples with one element of the tuple representing SBIR record and another element representing the patent record. Abstracts corresponding to each tuple is passed to the LlamaIndex Semantics similarity function. Only tuples that pass the 0.8 similarity threshold are retained. The output is stored in </b> llama_similarity.csv </b> in preprocessed_files folder. 
+
+## Final graph creation in neo4j
+Now that we have generated all necessary files, the knowledge graph in neo4j is created by further processing the data and creating nodes and edges. This is performed by <b> neo4j_graph_etl.ipynb </b> at the top level. For this notebook to run, neo4j desktop application may need to be open to get the connection details that need to be updated in the notebook. 
