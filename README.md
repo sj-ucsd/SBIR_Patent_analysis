@@ -77,10 +77,12 @@ Future iterations of this effort could work this descripency between versions of
 This URLs are were the base level data comes from for this project. The patent data will need to be manually downloaded and placed in the input_files folder.
 The SBIR Award Data will be accessed at run time, so a internet connection will be needed.
 The IEEE and ACM data files are already stored in the input_files folder.
+``
 Patent Data: https://bulkdata.uspto.gov/data/patent/application/redbook/fulltext/2023/ipa230720.zip 
 SBIR Award Data: https://data.www.sbir.gov/awarddatapublic/award_data.csv
 IEEE Data: https://www.ieee.org/publications/services/thesaurus-access-page.html
 ACM Data: https://csrc.nist.gov/glossary
+```
 
 ## Prepration
 A key component of this project is building a classifier that can take a term/phrase and identify whether it is a technical term/phrase or not. This is useful in processing abstracts from SBIR and patent database and filter out any non-technical terms.
@@ -88,7 +90,7 @@ To build the classifer, we need
 1. a set of technical terms which are obtained by processing IEEE Thesaurus and vocabulary from ACM. The technical terms are extracted using the notebook <b>process_ieee_thesaurus_acm_terms.ipynb</b> from <b>preprocessing</b> folder.
 2. a set of non-technical terms. This is obtained by taking a sample of abstracts from the SBIR dataset and extracting entities using Spacy and filtering any technical terms. The non-technical terms are extracted using the notebookt <b>generate_nontech_terms.ipynb</b> from <b>preprocessing</b> folder. The notebook <b>spacy_helper_methods.ipynb</b> has Spacy based helper functions to lemmatize and extract entities from SBIR abstracts. The notebook is loaded by other notebooks. 
 3. Finally a binary classifier using RandomForrest is created. This is implemented in <b>tech_term_classifier.ipynb</b> from the <b>model</b> folder.
-4. The trained model <b>trained_tech_classifier_model.joblib.zip</b>is stored as a zip file in <b>model</b> folder and can be used in subsequent stages. 
+4. The trained model <b>trained_tech_classifier_model.joblib.zip</b> is stored as a zip file in <b>model</b> folder and can be used in subsequent stages. 
 
 ## Extraction of technical terms
 Once necessary preparation is done, we are ready to do entity extraction. Entity extraction is done on patent dataset which is in xml format and SBIR dataset which is in csv format. For patents xml file, there is additional preprocessing done. The steps involved in technical terms is same for both datasets and as follows:
