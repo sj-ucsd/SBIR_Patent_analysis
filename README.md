@@ -67,10 +67,11 @@ To download en_core_sci_lg language model used for the tests, uncomment and run 
 The en_core_sci_lg-0.5.3 model was run on spacy 3.6.1 and will provide a warning message saying it may not operate correctly with spacy 3.7.2
 For this project spacy 3.7.2 is needed and the model operated without issue and can be run in this manner. 
 Future iterations of this effort could work this descripency between versions of dependecies.
+```
 !pip install scispacy
 !pip install --upgrade scipy
 !pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_lg-0.5.3.tar.gz 
-
+```
     
 ## Data URLs
 This URLs are were the base level data comes from for this project. The patent data will need to be manually downloaded and placed in the input_files folder.
