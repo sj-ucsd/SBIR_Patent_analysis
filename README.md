@@ -20,7 +20,8 @@ Understanding effects of social policy impact on investments: How much funding a
 It is recommended to just run the neo4j_graph_etl.ipynb file to generate the graph data base and to run the associated queries. If that is all that is needed, 
 then it is recommended to skip this complete installation section and just run install the packages needed for that notebook. The reason for this is that this 
 project developed a modular approach and had intermediate data files generated after each stage of the pipeline. All the files and intermediate files have already 
-been run and the final module, the creation of the graph data base and running of queries can be executed withour rerunning these other files. 
+been run and the final module, the creation of the graph data base and running of queries can be executed withour rerunning these other files.
+If the desire is to run the complete pipeline from end to end, follow the rest of this readme file. THen execute the notebooks in the following order:
 
 1. Ensure all input files are available. Some input files such as patents XML need ot be downloaded using URLs provided above
 2. Run following notebooks to create technical dictionary in any order in the <b>preprocessing</b> folder:
